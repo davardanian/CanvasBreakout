@@ -81,7 +81,10 @@ const draw = function() {
             context.fill();
             point.x += point.xDelta;
             point.y += point.yDelta;
-            if(point.y - point.height <= 0 || point.y + point.height >= canvas.height){point.yDelta *= -1}
+            if(point.y - point.height <= 0 ){point.yDelta *= -1}
+            if(point.y + point.height >= canvas.height) {
+                $('#body').html('<h1>' + dsdsdsd + '</h1>');
+            }
             if(point.x - point.height <= 0 || point.x + point.height >= canvas.width){point.xDelta *= -1}
         }
         context.fillRect(point.x,point.y,point.width,point.height)     ;
@@ -96,11 +99,37 @@ const draw = function() {
             }
         }
 
+//bricks
+
+        let brick ={
+            x: 40,
+            y:20,
+            color: 'blue'
+        }
+        context.fillStyle=brick.color;
+        for(i=5; i<= canvas.width-10 ; i= i+50 ) {
+             context.fillRect(i, 100,brick.x , brick.y)
+                   }
+        for(i=30;i<= canvas.width-50; i= i+50) {
+            context.fillRect(i, 140, brick.x, brick.y)
+        }
+
+
+
     });
 
 
 
 };
+
+    //const detection = function() {
+    //if (objects.br.x <objects.ball.x + objects.ball.width  && objects.br.x + objects.br.width  > objects.ball.x &&
+     //   objects.br.y < objects.ball.y + objects.ball.height && objects.br.y + objects.br.height > objects.ball.y) {
+       // objects.ball.yDelta *= -1;
+        //objects.ball.xDelta *= -1;
+   // }
+  //  })
+
 
 
 let animate = function() {
