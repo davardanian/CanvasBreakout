@@ -121,11 +121,20 @@ const drawball = function() {
     const drawbr = function () {
 
         context.fillRect(br.x, br.y, br.width, br.height);
-        if (br.x + br.width >= canvas.width ){
-            br.xDelta = 0;
+        if (br.x > canvas.width-100) {
+            if (br.x + br.width >= canvas.width) br.xDelta = 0;
+            if (br.xDelta === 0 && key_left) {
+                br.xDelta = defaultx;
+                br.x -= br.xDelta;
+            }
         }
-       // if (br.x <= 0) br.xDelta= 0;
-
+        if (br.x < 100 ) {
+            if (br.x <= 0) br.xDelta = 0;
+            if (br.xDelta === 0 && key_right) {
+                br.xDelta = defaultx;
+                br.x += br.xDelta;
+            }
+        }
         if (key_left) {
             br.x -= br.xDelta;
         }
@@ -134,14 +143,8 @@ const drawball = function() {
             br.x += br.xDelta;
 
         }
-       // if (br.xDelta===0 && key_right) {
-          //  br.xDelta = defaultx;
-           // br.x += br.xDelta;
-        //}
-        if (br.xDelta===0 && key_left) {
-            br.xDelta = defaultx;
-            br.x -= br.xDelta;
-        }
+
+
 
 
     };
