@@ -4,8 +4,8 @@
 
 let context = canvas.getContext("2d");
 
-    window.addEventListener('keydown', handleKeyDown, true)
-    window.addEventListener('keyup', handleKeyUp, true)
+    window.addEventListener('keydown', handleKeyDown, true);
+    window.addEventListener('keyup', handleKeyUp, true);
 
 
     function handleKeyDown(event)
@@ -28,9 +28,9 @@ let context = canvas.getContext("2d");
     var key_left = false;
     var key_right = false;
 
-const objects = [];
 
 
+let bricks = [];
 let br = {
     x: 300,
 
@@ -47,99 +47,126 @@ let br = {
     color: 'red',
 
     type: 'br'
-}
+};
+    let defaultx = br.xDelta;
     let ball = {
 
-        x: 300,
-        y: 300,
+        x: 320,
+        y: 440,
         height: 10,
+        width: 0,
         type: 'ball',
         xDelta: 1,
         color: 'red',
         yDelta: 1
+    };
+    let Levelmap = [];
+    Levelmap[0]='000000000000-000000001100-000000000000-000000001111-111111101111-111110000000-000000000000';
+
+    const xpadding = 10;
+    const ypadding = 10;
+    var currentlevel=0;
+    var brickrows = Levelmap[currentlevel].split('-');
+    for (i=0;i<7; i++) {
+        let l = brickrows[i];
+        for (j = 1; j < 13; j++) {
+            let yy = ypadding * i + (i - 1) * 20;
+            let xx = xpadding * j + (j - 1) * 40;
+            if (l.substr(j-1, 1) != '0') {
+                bricks.push({
+                    x: xx,
+                    y: yy,
+                    width: 40,
+                    height: 20,
+                    type: l.substr(j-1, 1),
+                    color: 'yellow'
+                })
+            }
+        }
     }
 
+const drawbricks = function(){
 
-    objects.push(br);
-    objects.push(ball);
-
-const draw = function() {
-
-
-
-
-    context.clearRect(0,0,canvas.width,canvas.height);
-    objects.forEach(function(point) {
-
-
-
-        context.fillStyle=point.color;
-        if (point.type === 'ball'){
-           context.beginPath();
-            context.arc(point.x,point.y,point.height,0,2*Math.PI)
-
-            context.fill();
-            point.x += point.xDelta;
-            point.y += point.yDelta;
-            if(point.y - point.height <= 0 ){point.yDelta *= -1}
-            if(point.y + point.height >= canvas.height) {
-                $('#body').html('<h1>' + dsdsdsd + '</h1>');
-            }
-            if(point.x - point.height <= 0 || point.x + point.height >= canvas.width){point.xDelta *= -1}
-        }
-        context.fillRect(point.x,point.y,point.width,point.height)     ;
-        if (point.x >= canvas.width || point.x <= 0) { point.xDelta *= -1}
-        if (point.y >= canvas.height || point.y <= 0) { point.yDelta *= -1}
-        if (point.type==='br') {
-            if (key_left) {
-                point.x -= point.xDelta;
-            }
-            if (key_right) {
-                point.x += point.xDelta;
-            }
-        }
-
-//bricks
-
-        let brick ={
-            x: 40,
-            y:20,
-            color: 'blue'
-        }
-        context.fillStyle=brick.color;
-        for(i=5; i<= canvas.width-10 ; i= i+50 ) {
-             context.fillRect(i, 100,brick.x , brick.y)
-                   }
-        for(i=30;i<= canvas.width-50; i= i+50) {
-            context.fillRect(i, 140, brick.x, brick.y)
-        }
-
-
-
+   bricks.forEach(function(brick) {
+       context.fillStyle=brick.color;
+       context.fillRect(brick.x,brick.y,brick.width,brick.height)     ;
     });
-
-
-
 };
 
-    //const detection = function() {
-    //if (objects.br.x <objects.ball.x + objects.ball.width  && objects.br.x + objects.br.width  > objects.ball.x &&
-     //   objects.br.y < objects.ball.y + objects.ball.height && objects.br.y + objects.br.height > objects.ball.y) {
-       // objects.ball.yDelta *= -1;
-        //objects.ball.xDelta *= -1;
-   // }
-  //  })
+const drawball = function() {
+
+    context.fillStyle = ball.color;
+
+    context.beginPath();
+    context.arc(ball.x, ball.y, ball.height, ball.width, 2 * Math.PI);
+
+    context.fill();
+
+
+            ball.x += ball.xDelta;
+            ball.y += ball.yDelta;
+            if (ball.y - ball.height <= 0) {
+                ball.yDelta *= -1;
+            }
+            if (ball.y + ball.height >= canvas.height) {
+                ball.yDelta *= -1;
+            }
+            if (ball.x - ball.height <= 0 || ball.x + ball.height >= canvas.width) {
+                ball.xDelta *= -1;
+            }
 
 
 
-let animate = function() {
+}
+    const drawbr = function () {
 
-    draw();
+        context.fillRect(br.x, br.y, br.width, br.height);
+        if (br.x + br.width >= canvas.width ){
+            br.xDelta = 0;
+        }
+       // if (br.x <= 0) br.xDelta= 0;
 
-    setTimeout(animate, 10);
+        if (key_left) {
+            br.x -= br.xDelta;
+        }
+        if (key_right) {
 
-};
+            br.x += br.xDelta;
 
+        }
+       // if (br.xDelta===0 && key_right) {
+          //  br.xDelta = defaultx;
+           // br.x += br.xDelta;
+        //}
+        if (br.xDelta===0 && key_left) {
+            br.xDelta = defaultx;
+            br.x -= br.xDelta;
+        }
+
+
+    };
+
+
+
+
+
+
+
+    let animate = function () {
+
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        drawbricks();
+        drawball();
+        drawbr();
+
+
+        setTimeout(animate, 10);
+
+    };
+
+
+console.log(bricks);
 animate();
 
 
