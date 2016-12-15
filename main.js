@@ -2,13 +2,18 @@
 
   let canvas = document.getElementById("canvas");
   let context = canvas.getContext("2d");
+
   let bricks = [];
+
+  var livecount = 3;
+  var scorecount = 0;
+
 
   var key_left = false;
   var key_right = false;
   var key_start = false;
 
-  var currentlevel=0;
+  var currentlevel = 1;
 
   const xpadding = 10;
   const ypadding = 10;
@@ -31,16 +36,26 @@
       color: 'red'
   };
 
+
   let defaultx = br.xDelta;
+
+
+// INFO BAR
+
 
 // LEVELS MAP
   let Levelmap = [];
   Levelmap[0]='000000000000-000000000000-000000000000-111000000111-111111111111-000000000000-000000000000';
   Levelmap[1]='000300003000-000000000000-002220022200-111000000111-111111111111-000000000000-000004400000';
+  Levelmap[2]='010203302010-030201102030-101010101010-010101010101-000000000000-000000000000-000000000000';
+  Levelmap[3]='000001100000-000010010000-000100001000-001003300100-000100001000-000010010000-000001100000';
+  Levelmap[4]='040000000040-001100110011-110011001100-202020202020-020202020202-303030303030-040404040404';
 
   window.addEventListener('keydown', handleKeyDown, true);
   window.addEventListener('keyup', handleKeyUp, true);
   window.addEventListener('keydown', handleKeyStart, true);
+
+
 
 
   function handleKeyStart(event) {
@@ -63,7 +78,8 @@
     }
 
 
-    var brickrows = Levelmap[currentlevel].split('-');
+const preparelevel = function(){
+    var brickrows = Levelmap[currentlevel-1].split('-');
     for (i=0;i<7; i++) {
         let l = brickrows[i];
             for (j = 0; j < 12; j++) {
@@ -80,7 +96,10 @@
             }
         }
     }
-
+    livecount=3;
+    currentlevel=1;
+    scorecount=0;
+};
 const drawbricks = function(){
 
    bricks.forEach(function(brick) {
@@ -98,14 +117,30 @@ const drawball = function() {
     context.beginPath();
     context.arc(ball.x, ball.y, ball.height, 0, 2 * Math.PI);
     context.fill();
+    if (!key_start) {
+        ball.x = br.x + br.width / 2;
+        return;
+    }
 
     ball.x += ball.xDelta;
     ball.y += ball.yDelta;
     if (ball.y - ball.height - 1 <= 0) {
         ball.yDelta *= -1;
     }
+// AUT
     if (ball.y + ball.height >= canvas.height) {
         ball.yDelta *= -1;
+        livecount --;
+        scorecount=scorecount-10;
+        $('#scorecount').html(scorecount);
+        if (livecount==-1) {
+
+            alert("Game Over");
+            preparelevel();
+
+
+        }
+
         initgame();
     }
     if (ball.x - ball.height - 1 <= 0 || ball.x + ball.height + 1 >= canvas.width) {
@@ -135,94 +170,110 @@ const drawball = function() {
 
 //  Check collision with bricks
     let bb = -1;
-    bricks.forEach(function (brick) {
-
+    for (i = 0; i<bricks.length; i++){
 // Collision with bottom side of brick
         if ((ball.yDelta < 0) &&
-            (ball.x >= brick.x) &&
-            (ball.x <= brick.x + brick.width) &&
-            (ball.y - ball.height <= brick.y + brick.height) &&
-            (ball.y > brick.y)){
+            (ball.x >= bricks[i].x) &&
+            (ball.x <= bricks[i].x + bricks[i].width) &&
+            (ball.y - ball.height <= bricks[i].y + bricks[i].height) &&
+            (ball.y > bricks[i].y)){
             ball.yDelta *= -1;
-            brick.bricktype -= 1;
-            bb = bricks.indexOf(brick);
+            bricks[i].bricktype -= 1;
+            bb = i;
+            break;
         }
 // Collision with top side of brick
         if (bb==-1 && (ball.yDelta > 0) &&
-            (ball.x >= brick.x) &&
-            (ball.x <= brick.x + brick.width) &&
-            (ball.y + ball.height >= brick.y) &&
-            (ball.y < brick.y + brick.height)) {
+            (ball.x >= bricks[i].x) &&
+            (ball.x <= bricks[i].x + bricks[i].width) &&
+            (ball.y + ball.height >= bricks[i].y) &&
+            (ball.y < bricks[i].y + bricks[i].height)) {
             ball.yDelta *= -1;
-            brick.bricktype -= 1;
-            bb = bricks.indexOf(brick);
+            bricks[i].bricktype -= 1;
+            bb = i;
+            break;
         }
 // Collision with left side of brick
         if (bb==-1 && (ball.xDelta > 0) &&
-            (ball.y >= brick.y) &&
-            (ball.y <= brick.y + brick.height) &&
-            (ball.x + ball.height >= brick.x) &&
-            (ball.x < brick.x)) {
+            (ball.y >= bricks[i].y) &&
+            (ball.y <= bricks[i].y + bricks[i].height) &&
+            (ball.x + ball.height >= bricks[i].x) &&
+            (ball.x < bricks[i].x)) {
             ball.xDelta *= -1;
-            brick.bricktype -= 1;
-            bb = bricks.indexOf(brick);
+            bricks[i].bricktype -= 1;
+            bb = i;
+            break;
         }
 // Collision with right side of brick
         if (bb==-1 && (ball.xDelta < 0) &&
-            (ball.y >= brick.y) &&
-            (ball.y <= brick.y + brick.height) &&
-            (ball.x - ball.height <= brick.x) &&
-            (ball.x > brick.x + brick.width)) {
+            (ball.y >= bricks[i].y) &&
+            (ball.y <= bricks[i].y + bricks[i].height) &&
+            (ball.x - ball.height <= bricks[i].x) &&
+            (ball.x > bricks[i].x + bricks[i].width)) {
             ball.xDelta *= -1;
-            brick.bricktype -= 1;
-            bb = bricks.indexOf(brick);
+            bricks[i].bricktype -= 1;
+            bb = i;
+            break;
         }
 
 // Collision with brick`s corners
 // top-left
-        if (bb==-1 && ball.x < brick.x &&
-            ball.x + ball.height > brick.x &&
-            Math.pow((ball.x-brick.x), 2) + Math.pow((ball.y-brick.y), 2) <= Math.pow(ball.height,2) ) {
+        if (bb==-1 && ball.x < bricks[i].x &&
+            ball.x + ball.height > bricks[i].x &&
+            Math.pow((ball.x-bricks[i].x), 2) + Math.pow((ball.y-bricks[i].y), 2) <= Math.pow(ball.height,2) ) {
             ball.yDelta = -1;
             ball.xDelta = -3;
-            brick.bricktype -= 1;
-            bb = bricks.indexOf(brick);
+            bricks[i].bricktype -= 1;
+            bb = i;
+            break;
         }
 
 // top-right
-        if (bb==-1 && ball.x > brick.x + brick.width &&
-            ball.x - ball.height < brick.x + brick.width &&
-            Math.pow((ball.x-brick.x-brick.width), 2) + Math.pow((ball.y-brick.y), 2) <= Math.pow(ball.height,2) ) {
+        if (bb==-1 && ball.x > bricks[i].x + bricks[i].width &&
+            ball.x - ball.height < bricks[i].x + bricks[i].width &&
+            Math.pow((ball.x-bricks[i].x-bricks[i].width), 2) + Math.pow((ball.y-bricks[i].y), 2) <= Math.pow(ball.height,2) ) {
             ball.yDelta = -1;
             ball.xDelta = 3;
-            brick.bricktype -= 1;
-            bb = bricks.indexOf(brick);
+            bricks[i].bricktype -= 1;
+            bb = i;
+            break;
         }
 // bottom-left
-        if (bb==-1 && ball.x < brick.x &&
-            ball.x + ball.height > brick.x &&
-            Math.pow((ball.x-brick.x), 2) + Math.pow((ball.y-brick.y-brick.height), 2) <= Math.pow(ball.height,2) ) {
+        if (bb==-1 && ball.x < bricks[i].x &&
+            ball.x + ball.height > bricks[i].x &&
+            Math.pow((ball.x-bricks[i].x), 2) + Math.pow((ball.y-bricks[i].y-bricks[i].height), 2) <= Math.pow(ball.height,2) ) {
             ball.yDelta = 1;
             ball.xDelta = -3;
-            brick.bricktype -= 1;
-            bb = bricks.indexOf(brick);
+            bricks[i].bricktype -= 1;
+            bb = i;
+            break;
         }
 // bottom-right
-        if (bb==-1 && ball.x > brick.x + brick.width &&
-            ball.x - ball.height < brick.x + brick.width &&
-            Math.pow((ball.x-brick.x-brick.width), 2) + Math.pow((ball.y-brick.y-brick.height), 2) <= Math.pow(ball.height,2) ) {
+        if (bb==-1 && ball.x > bricks[i].x + bricks[i].width &&
+            ball.x - ball.height < bricks[i].x + bricks[i].width &&
+            Math.pow((ball.x-bricks[i].x-bricks[i].width), 2) + Math.pow((ball.y-bricks[i].y-bricks[i].height), 2) <= Math.pow(ball.height,2) ) {
             ball.yDelta = 1;
             ball.xDelta = 3;
-            brick.bricktype -= 1;
-            bb = bricks.indexOf(brick);
+            bricks[i].bricktype -= 1;
+            bb = i;
+            break;
         }
 
 
-    });
+
+    }
 // delete brick from array
     if (bb > -1 && bricks[bb].bricktype == 0){
+        $('#scorecount').html(++scorecount);
         bricks.splice(bb,1);
         bb = -1;
+        if (bricks.length == 0) {
+            currentlevel ++;
+            $('#livecount').html(livecount+1);
+            if (currentlevel > Levelmap.length) currentlevel = 1;
+            preparelevel();
+            initgame();
+        }
     }
 
 
@@ -257,22 +308,25 @@ const drawball = function() {
     };
 
     let animate = function () {
-        if (key_start) {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            drawbricks();
-            drawball();
-            drawbr();
-        }
-        intrv = setTimeout(animate, 10);
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        drawbricks();
+        drawball();
+        drawbr();
+//        if (key_start) {
+//            context.clearRect(0, 0, canvas.width, canvas.height);
+//            drawbricks();
+//            drawball();
+//            drawbr();
+//        }
+        setTimeout(animate, 10);
     };
   let initgame = function() {
       context.clearRect(0, 0, canvas.width, canvas.height);
-
       br.x = 270;
       br.y = 450;
       br.width = 60;
       br.height = 10;
-      br.xDelta = 2;
+      br.xDelta = 4;
       br.color = 'red';
       br.type = 'br';
       defaultx = br.xDelta;
@@ -286,12 +340,17 @@ const drawball = function() {
       ball.color = 'red';
       ball.yDelta = -2;
 
+      $('#livecount').html(livecount);
+      $('#levelcount').html(currentlevel)
+      $('#scorecount').html(scorecount);
+
       drawbricks();
       drawball();
       drawbr();
       key_start = false;
 
   };
+  preparelevel();
   initgame();
   animate();
 

@@ -1,21 +1,44 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     <meta charset="utf-8" />
     <title>Gamedev Canvas Workshop</title>
-    <style>
-        * { padding: 0; margin: 0; }
-        canvas { background: #eee; display: block; margin: 0 auto; }
-    </style>
+
 </head>
 <body>
-<div id="body">
-
+<div id="playzone">
 <canvas id="canvas" width="600" height="500"></canvas>
-<script src="jquery-3.1.1.js"> </script>
-<script src="main.js">
-
-</script>
 </div>
+<div id="infozone">
+
+    <table>
+
+        <tr>
+            <td class="static">Lives</td>
+            <td id="livecount">3</td>
+
+
+        </tr>
+        <tr>
+            <td class="static">Score</td>
+            <td id="scorecount">0</td>
+
+        </tr>
+        <tr>
+            <td class="static">Level</td>
+            <td id="levelcount">1</td>
+
+
+        </tr>
+    </table>
+
+
+</div>
+
+<script src="jquery-3.1.1.js"></script>
+<script src="main.js"></script>
 </body>
 </html>
