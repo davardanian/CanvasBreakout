@@ -3,6 +3,14 @@
 
 canvas { background: #eee; display: block; margin: 0 auto; }
 
+
+#scoretable  {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+
+}
+
 table {
     position: absolute;
     top: 30px;
@@ -10,8 +18,7 @@ table {
     color: #333;
     font-family: Helvetica, Arial, sans-serif;
     width: 240px;
-    border-collapse:
-            collapse; border-spacing: 0;
+
 }
 
 td {
@@ -32,9 +39,11 @@ td {
     width: 20px;
 }
 
-/* Cells in even rows (2,4,6...) are one color
-tr:nth-child(even) td { background: #F1F1F1; }*/
 
-/* Cells in odd rows (1,3,5...) are another (excludes header cells)
-tr:nth-child(odd) td { background: #FEFEFE; }
-*/
+#highscore {
+    position: relative;
+    left: 40px;
+    text-align: center;
+    vertical-align: middle;
+    margin-bottom: 20px;
+}

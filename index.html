@@ -3,6 +3,7 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="main.css">
+
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     <meta charset="utf-8" />
     <title>Gamedev Canvas Workshop</title>
@@ -11,6 +12,19 @@
 <body>
 <div id="playzone">
 <canvas id="canvas" width="600" height="500"></canvas>
+    <div id="scorediv">
+        <table id="scoretable">
+
+            <thead>
+                <tr align="center">
+                <td id="highscore">Highscores</td>
+                </tr>
+            </thead>
+            <tbody id="scorebody">
+
+            </tbody>
+            </table>
+    </div>
 </div>
 <div id="infozone">
 
@@ -36,9 +50,15 @@
     </table>
 
 
+
 </div>
 
-<script src="jquery-3.1.1.js"></script>
+ <script src="jquery-3.1.1.js"></script>
+<script src="js/bootstrap.js"></script>
 <script src="main.js"></script>
+
+
+
+
 </body>
 </html>
