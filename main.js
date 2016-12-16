@@ -168,6 +168,16 @@
           });
       };
 
+  // BORDER DRAW FUNCTION
+      const drawborders = function() {
+          context.strokeStyle= "#34495E";
+          context.lineWidth= 10;
+          context.strokeRect(2,2,canvas.width-2,canvas.height-2);
+          context.strokeStyle= "grey";
+          context.lineWidth= 5;
+          context.strokeRect(0,0,canvas.width,canvas.height);
+
+      };
       const drawball = function () {
 
           context.fillStyle = ball.color;
@@ -401,6 +411,7 @@
           key_start = false;
 
       };
+
       preparelevel();
       initgame();
       animate();
