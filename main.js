@@ -11,6 +11,12 @@
 
   var brickrows;
 
+  var mainmusic = new Audio('music.mp3');
+  var colsound = new Audio('music1.wav');
+  var breaksnd = new Audio('cl2.wav');
+  var gameoversnd = new Audio('gameover.wav');
+  
+
   var key_left = false;
   var key_right = false;
   var key_start = false;
@@ -49,23 +55,30 @@
 
   // LEVELS MAP
   let Levelmap = [];
-  Levelmap[0]='000000000000-000000000000-000000000000-000000000000-000000001000-000000000000-000000000000';
-  Levelmap[1]='000300003000-000000000000-002220022200-111000000111-111111111111-000000000000-000004400000';
+  Levelmap[0]='000300003000-000000000000-002220022200-111000000111-111111111111-000000000000-000004400000';
+  Levelmap[1]='000111111000-001121121100-001121121100-011111111110-011132231110-010133331010-010111111010';
   Levelmap[2]='010203302010-030201102030-101010101010-010101010101-000000000000-000000000000-000000000000';
   Levelmap[3]='000001100000-000010010000-000100001000-001003300100-000100001000-000010010000-000001100000';
   Levelmap[4]='040000000040-001100110011-110011001100-202020202020-020202020202-303030303030-040404040404';
   Levelmap[5]='102030400040-001100110011-110011001100-202020202020-020202020202-303030303030-040404040404';
+  Levelmap[6]='000111111000-001120021100-001120021100-011111111110-011111111110-010111111010-010111111010';
 
   window.addEventListener('keydown', handleKeyDown, true);
   window.addEventListener('keyup', handleKeyUp, true);
   window.addEventListener('keydown', handleKeyStart, true);
+  mainmusic.addEventListener('ended', function() {
+      this.currentTime = 0;
+      this.play();
+  }, false);
 
 
 
 
   function handleKeyStart(event) {
-      if (event.keyCode == 13) {
+      if (event.keyCode == 32) {
           key_start = true;
+          mainmusic.play();
+          mainmusic.loop=true;
       }
   }
   function handleKeyDown(event) {
@@ -89,17 +102,18 @@
           dataType: 'json',
           contentType: 'json',
           success: function (data) {
-              console.log(JSON.stringify(data));
               var byScore = data.slice(0);
-              byScore.sort(function(a,b) {
+              byScore.sort(function (a, b) {
                   return a.score - b.score;
               });
               byScore.reverse();
-              byScore.forEach(function(item) {
+              for (item = 0; item <= 4; item++) {
 
-                  $('#scorebody').append('<tr><td>'+item.name+'</td><td>'+item.score+'</td></tr>');
-              });
-              // $('#scorebody').append('<tr><td>'+item.name+'</td><td>'+item.score+'</td></tr>');
+                  $('#scorebody').append('<tr><td>' + byScore[item].name + '</td><td>' + byScore[item].score + '</td></tr>');
+              }
+              ;
+
+
 
 
           },
@@ -130,7 +144,7 @@
               $('#scorebody').html('');
           },
           error: function (data) {
-              alert('Error creating todo');
+              alert('Error');
           }
       });
   };
@@ -168,16 +182,7 @@
       });
   };
 
-  // BORDER DRAW FUNCTION
-  const drawborders = function() {
-      context.strokeStyle= "#34495E";
-      context.lineWidth= 10;
-      context.strokeRect(2,2,canvas.width-2,canvas.height-2);
-      context.strokeStyle= "grey";
-      context.lineWidth = 5;
-      context.strokeRect(0,0,canvas.width,canvas.height);
 
-  };
   const drawball = function () {
 
       context.fillStyle = ball.color;
@@ -204,8 +209,16 @@
               currentlevel = 1;
               $('#livecount').html(0);
               scorecount = scorecount - 5;
-              sendscore();
+
+
+                  gameoversnd.play();
+
+                  sendscore();
+
               $('#scorebody').html('');
+              //mainmusic.stop();
+
+
               bricks = [];
               livecount = 3;
               currentlevel = 1;
@@ -340,9 +353,12 @@
 // delete brick from array
       if (bb > -1) {
           $('#scorecount').html(++scorecount);
+          colsound.play();
           if (bricks[bb].bricktype == 0) {
               bricks.splice(bb, 1);
+
               bb = -1;
+              breaksnd.play();
           }
           // next level
           if (bricks.length == 0) {
@@ -413,44 +429,51 @@
               interval = 5;
               br.xDelta = 3;
       }
+
       setTimeout(animate, interval);
   };
-  let initgame = function () {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      br.x = 270;
-      br.y = 450;
-      br.width = 60;
-      br.height = 10;
-      br.xDelta = 3;
-      br.color = '#F0F8FF';
-      br.type = 'br';
-      defaultx = br.xDelta;
+      let initgame = function () {
+          context.clearRect(0, 0, canvas.width, canvas.height);
+          br.x = 270;
+          br.y = 450;
+          br.width = 60;
+          br.height = 10;
+          br.xDelta = 3;
+          br.color = '#F0F8FF';
+          br.type = 'br';
+          defaultx = br.xDelta;
+          //context.lineWidth=5;
+          //context.strokeStyle='black';
+          //context.strokeRect(400, 0, canvas.width, canvas.height);
 
-      ball.x = 300;
-      ball.y = 440;
-      ball.height = 10;
-      ball.width = 0;
-      ball.type = 'ball';
-      ball.xDelta = 1; //1
-      ball.color = '#e6ac00';
-      ball.yDelta = -1;
+          ball.x = 300;
+          ball.y = 440;
+          ball.height = 10;
+          ball.width = 0;
+          ball.type = 'ball';
+          ball.xDelta = 1; //1
+          ball.color = '#e6ac00';
+          ball.yDelta = -1;
 
-      $('#livecount').html(livecount);
-      $('#levelcount').html(currentlevel);
-      $('#scorecount').html(scorecount);
+          $('#livecount').html(livecount);
+          $('#levelcount').html(currentlevel);
+          $('#scorecount').html(scorecount);
 
-      drawbricks();
-      drawball();
-      drawbr();
-      key_start = false;
-      key_left = false;
-      key_right = false;
+          drawbricks();
+          drawball();
+          drawbr();
+          key_start = false;
+          key_left = false;
+          key_right = false;
 
-  };
 
-  preparelevel();
-  initgame();
-  animate();
+      };
+
+      preparelevel();
+      initgame();
+      animate();
+
+
 
 
 
