@@ -14,6 +14,7 @@
   var mainmusic = new Audio('music.mp3');
   var colsound = new Audio('music1.wav');
   var breaksnd = new Audio('cl2.wav');
+  var gameoversnd = new Audio('gameover.wav');
   
 
   var key_left = false;
@@ -73,6 +74,7 @@
       if (event.keyCode == 32) {
           key_start = true;
           mainmusic.play();
+          mainmusic.loop=true;
       }
   }
   function handleKeyDown(event) {
@@ -210,6 +212,9 @@
               currentlevel = 1;
               $('#livecount').html(0);
               scorecount = scorecount - 5;
+              mainmusic.stop();
+
+              gameoversnd.play();
               sendscore();
               $('#scorebody').html('');
               bricks = [];
