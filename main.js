@@ -46,7 +46,7 @@
 
   // LEVELS MAP
   let Levelmap = [];
-  Levelmap[0]='000000000000-000000000000-000000000000-111000000111-111111111111-000000000000-000000000000';
+  Levelmap[0]='000000000000-000000000000-000000000000-000000000000-000000010000-000000000000-000000000000';
   Levelmap[1]='000300003000-000000000000-002220022200-111000000111-111111111111-000000000000-000004400000';
   Levelmap[2]='010203302010-030201102030-101010101010-010101010101-000000000000-000000000000-000000000000';
   Levelmap[3]='000001100000-000010010000-000100001000-001003300100-000100001000-000010010000-000001100000';
@@ -130,7 +130,7 @@
       });
   }
 
-      const preparelevel = function () {
+      let preparelevel = function () {
           var brickrows = Levelmap[currentlevel - 1].split('-');
           for (i = 0; i < 7; i++) {
               let l = brickrows[i];
@@ -148,13 +148,6 @@
                   }
               }
           }
-
-
-          livecount = 3;
-          currentlevel = 1;
-          scorecount = 0;
-          getlist()
-
 
       };
       const drawbricks = function () {
@@ -200,12 +193,18 @@
               livecount--;
               scorecount = scorecount - 10;
               $('#scorecount').html(scorecount);
-              if (livecount == -1) {
-
+              if (livecount == 0) {
                   sendscore();
+                  getlist();
+                  livecount = 3;
+                  currentlevel = 1;
+                  scorecount = 0;
+                  console.log('Go to prepare level');
                   preparelevel();
+                  console.log('Return from prepare level');
               }
               initgame();
+              return;
           }
           if (ball.x - ball.height - 1 <= 0 || ball.x + ball.height + 1 >= canvas.width) {
               ball.xDelta *= -1;
@@ -326,16 +325,19 @@
 
           }
 // delete brick from array
-          if (bb > -1 && bricks[bb].bricktype == 0) {
+          if (bb > -1) {
               $('#scorecount').html(++scorecount);
-              bricks.splice(bb, 1);
-              bb = -1;
-              if (bricks.length == 0) {
-                  currentlevel++;
-                  $('#livecount').html(livecount + 1);
-                  if (currentlevel > Levelmap.length) currentlevel = 1;
-                  preparelevel();
-                  initgame();
+              if (bricks[bb].bricktype == 0) {
+                  bricks.splice(bb, 1);
+                  bb = -1;
+                  if (bricks.length == 0) {
+                      currentlevel++;
+                      livecount++;
+                      $('#livecount').html(livecount + 1);
+                      if (currentlevel > Levelmap.length) currentlevel = 1;
+                      preparelevel();
+                      initgame();
+                  }
               }
           }
 
@@ -374,12 +376,6 @@
           drawbricks();
           drawball();
           drawbr();
-//        if (key_start) {
-//            context.clearRect(0, 0, canvas.width, canvas.height);
-//            drawbricks();
-//            drawball();
-//            drawbr();
-//        }
           setTimeout(animate, 10);
       };
       let initgame = function () {
@@ -413,6 +409,7 @@
       };
 
       preparelevel();
+      getlist();
       initgame();
       animate();
 
