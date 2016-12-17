@@ -1,7 +1,10 @@
 
+body {
+    background-image: url('http://wallpapercave.com/wp/of9aeav.jpg');
+}
 * { padding: 0; margin: 0; }
 
-canvas { background: #eee; display: block; margin: 0 auto; }
+canvas { background: #004d4d; display: block; margin: 0 auto; }
 
 
 #scoretable  {
