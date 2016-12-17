@@ -1,22 +1,15 @@
-/**
- * Created by user on 15-Dec-16.
- */
+
 // BASIC SERVER DECLARATION
 'use strict';
 const http = require('http');
 const fs = require('fs');
 const url = require('url');
 const querystring = require('querystring');
+var list = require('./list.json');
 
-// LIST OF SCORES
-let scores = [
-    {name: 'Muk', score: 100},
-    {name: 'Kria', score: 12},
-    {name: 'Mane', score: 3233},
-    {name: 'Marat', score: 200},
-    {name: 'Hakob', score: 3123}
 
-];
+
+
 
 
 // BASIC SERVER FUNCTIONS DECLARATION
@@ -39,9 +32,9 @@ const httpServer = http.createServer(function(req, res) {
     if (method === 'GET') {
         if (req.url === '/index') {
 
-            const json = JSON.stringify(scores);
+
             res.setHeader('Content-Type', 'application/json');
-            res.end(json);
+            res.end(JSON.stringify(list));
         }
     }
 
@@ -55,7 +48,16 @@ const httpServer = http.createServer(function(req, res) {
             });
             req.on('end', function () {
                 let jsonObj = JSON.parse(body);  // now that we have the content, convert the JSON into an object
-                scores.push(jsonObj);
+                list.push(jsonObj);
+                console.log(list);
+
+                let b = JSON.stringify(list);
+                console.log(b);
+
+                fs.writeFile("./list.json", b, function(err){
+                    if (err) throw err;
+                    console.log("success");
+                });
                 res.setHeader('Content-Type', 'application/json');
                 res.end(JSON.stringify(jsonObj));
 
@@ -65,5 +67,5 @@ const httpServer = http.createServer(function(req, res) {
     }
 
 });
-    httpServer.listen(666);
+httpServer.listen(666);
 
