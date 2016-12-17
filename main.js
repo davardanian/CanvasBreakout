@@ -11,12 +11,6 @@
 
   var brickrows;
 
-  var mainmusic = new Audio('music.mp3');
-  var colsound = new Audio('music1.wav');
-  var breaksnd = new Audio('cl2.wav');
-  var gameoversnd = new Audio('gameover.wav');
-  
-
   var key_left = false;
   var key_right = false;
   var key_start = false;
@@ -55,13 +49,12 @@
 
   // LEVELS MAP
   let Levelmap = [];
-  Levelmap[0]='000111111000-001121121100-001121121100-011111111110-011132231110-010133331010-010111111010';
+  Levelmap[0]='000000000000-000000000000-000000000000-000000000000-000000001000-000000000000-000000000000';
   Levelmap[1]='000300003000-000000000000-002220022200-111000000111-111111111111-000000000000-000004400000';
   Levelmap[2]='010203302010-030201102030-101010101010-010101010101-000000000000-000000000000-000000000000';
   Levelmap[3]='000001100000-000010010000-000100001000-001003300100-000100001000-000010010000-000001100000';
   Levelmap[4]='040000000040-001100110011-110011001100-202020202020-020202020202-303030303030-040404040404';
   Levelmap[5]='102030400040-001100110011-110011001100-202020202020-020202020202-303030303030-040404040404';
-  Levelmap[6]='000111111000-001120021100-001120021100-011111111110-011111111110-010111111010-010111111010';
 
   window.addEventListener('keydown', handleKeyDown, true);
   window.addEventListener('keyup', handleKeyUp, true);
@@ -71,10 +64,8 @@
 
 
   function handleKeyStart(event) {
-      if (event.keyCode == 32) {
+      if (event.keyCode == 13) {
           key_start = true;
-          mainmusic.play();
-          mainmusic.loop=true;
       }
   }
   function handleKeyDown(event) {
@@ -98,6 +89,7 @@
           dataType: 'json',
           contentType: 'json',
           success: function (data) {
+              console.log(JSON.stringify(data));
               var byScore = data.slice(0);
               byScore.sort(function(a,b) {
                   return a.score - b.score;
@@ -212,9 +204,6 @@
               currentlevel = 1;
               $('#livecount').html(0);
               scorecount = scorecount - 5;
-              mainmusic.stop();
-
-              gameoversnd.play();
               sendscore();
               $('#scorebody').html('');
               bricks = [];
@@ -236,7 +225,7 @@
       if (ball.x >= br.x && ball.x <= br.x + br.width && ball.y + ball.height >= br.y && ball.y < br.y) {
           ball.yDelta *= -1;
 //  change ball angle
-          ball.xDelta = ((ball.x - br.x) - br.width / 2) / 10;
+          ball.xDelta = Math.round(((ball.x - br.x) - br.width / 2) / 10);
           return;
       }
 // Check collision with br left-top corner
@@ -351,12 +340,9 @@
 // delete brick from array
       if (bb > -1) {
           $('#scorecount').html(++scorecount);
-          colsound.play();
           if (bricks[bb].bricktype == 0) {
               bricks.splice(bb, 1);
-
               bb = -1;
-              breaksnd.play();
           }
           // next level
           if (bricks.length == 0) {
@@ -409,14 +395,25 @@
       drawbricks();
       drawball();
       drawbr();
-    //  if (Math.floor(ball.xDelta) == 1 ) {setTimeout(animate, 5)}
-    //  if (Math.floor(ball.xDelta) == -1) {setTimeout(animate, 5)}
-     // if (Math.floor(ball.xDelta) == +2) {setTimeout(animate, 8);}
-     // if (Math.floor(ball.xDelta) == -2) {setTimeout(animate, 8);}
-     // if (Math.floor(ball.xDelta) == 3) { setTimeout(animate, 11)}
-     // if (Math.floor(ball.xDelta) == -3){ setTimeout(animate, 11)}
-     // if (Math.floor(ball.xDelta) == 0) {setTimeout(animate,3)}
-      setTimeout(animate, (5 * Math.sqrt(Math.pow(ball.xDelta,2) + Math.pow(ball.yDelta, 2))-3));
+      var interval = 5;
+      switch (Math.abs(Math.floor(ball.xDelta))) {
+          case 1 :
+              interval = 5;
+              br.xDelta = 3;
+              break;
+          case 2 :
+              interval = 10;
+              br.xDelta = 4;
+              break;
+          case 3 :
+              interval = 13;
+              br.xDelta = 5;
+              break;
+          default :
+              interval = 5;
+              br.xDelta = 3;
+      }
+      setTimeout(animate, interval);
   };
   let initgame = function () {
       context.clearRect(0, 0, canvas.width, canvas.height);
@@ -428,9 +425,6 @@
       br.color = '#F0F8FF';
       br.type = 'br';
       defaultx = br.xDelta;
-      //context.lineWidth=5;
-      //context.strokeStyle='black';
-      //context.strokeRect(400, 0, canvas.width, canvas.height);
 
       ball.x = 300;
       ball.y = 440;
@@ -452,14 +446,11 @@
       key_left = false;
       key_right = false;
 
-
   };
 
   preparelevel();
   initgame();
   animate();
-
-  //http://media.gettyimages.com/videos/abstract-blue-grunge-framed-background-video-id92884129?s=640x640
 
 
 
