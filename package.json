@@ -1,0 +1,22 @@
+{
+  "name": "canvasbreakout",
+  "version": "1.0.0",
+  "description": "game",
+  "main": "main.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ccwisp/CanvasBreakout.git"
+  },
+  "author": "David",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ccwisp/CanvasBreakout/issues"
+  },
+  "homepage": "https://github.com/ccwisp/CanvasBreakout#readme"
+}
