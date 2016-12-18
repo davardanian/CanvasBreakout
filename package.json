@@ -2,7 +2,7 @@
   "name": "canvasbreakout",
   "version": "1.0.0",
   "description": "game",
-  "main": "main.js",
+  "main": "server.js",
   "dependencies": {},
   "devDependencies": {},
   "scripts": {
