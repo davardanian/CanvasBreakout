@@ -41,8 +41,8 @@
       y: 440,
       height: 10,
       width: 0,
-      xDelta: 1,
-      yDelta: -1,
+      xDelta: 2,
+      yDelta: -2,
       color: '#e6ac00'
   };
 
@@ -55,17 +55,20 @@
 
   // LEVELS MAP
   let Levelmap = [];
-  Levelmap[0]='000300003000-000000000000-002220022200-111000000111-111111111111-000000000000-000004400000';
-  Levelmap[1]='000111111000-001121121100-001121121100-011111111110-011132231110-010133331010-010111111010';
-  Levelmap[2]='010203302010-030201102030-101010101010-010101010101-000000000000-000000000000-000000000000';
+
+  Levelmap[0]='000111111000-001121121100-001121121100-011111111110-011132231110-010133331010-010111111010';
+  Levelmap[2]='010203302010-003201102030-101010101010-010101010101-000000000000-000000000000-000000000000';
   Levelmap[3]='000001100000-000010010000-000100001000-001003300100-000100001000-000010010000-000001100000';
   Levelmap[4]='040000000040-001100110011-110011001100-202020202020-020202020202-303030303030-040404040404';
   Levelmap[5]='102030400040-001100110011-110011001100-202020202020-020202020202-303030303030-040404040404';
   Levelmap[6]='000111111000-001120021100-001120021100-011111111110-011111111110-010111111010-010111111010';
-
+  Levelmap[7]='000300003000-000000000000-002220022200-111000000111-111111111111-000000000000-000004400000';
+  Levelmap[8]='011000001110-100100001010-100000001000-100000001110-100000000010-100100001010-011000001110';
   window.addEventListener('keydown', handleKeyDown, true);
   window.addEventListener('keyup', handleKeyUp, true);
   window.addEventListener('keydown', handleKeyStart, true);
+
+  // To loop main music
   mainmusic.addEventListener('ended', function() {
       this.currentTime = 0;
       this.play();
@@ -235,14 +238,14 @@
       }
 
 // Check collision with br top side
-      if (ball.x >= br.x && ball.x <= br.x + br.width && ball.y + ball.height >= br.y && ball.y < br.y) {
+      if (ball.yDelta> 0 && ball.x >= br.x && ball.x <= br.x + br.width && ball.y + ball.height >= br.y && ball.y < br.y) {
           ball.yDelta *= -1;
 //  change ball angle
           ball.xDelta = Math.round(((ball.x - br.x) - br.width / 2) / 10);
           return;
       }
 // Check collision with br left-top corner
-      if (ball.x < br.x &&
+      if (ball.yDelta> 0 && ball.x < br.x &&
           ball.x + ball.height > br.x &&
           Math.pow((ball.x - br.x), 2) + Math.pow((ball.y - br.y), 2) <= Math.pow(ball.height, 2)) {
           ball.yDelta *= -1;
@@ -250,7 +253,7 @@
           return;
       }
 // Check collision with br right-top corner
-      if (ball.x > br.x + br.width &&
+      if (ball.yDelta> 0 && ball.x > br.x + br.width &&
           ball.x - ball.height < br.x + br.width &&
           Math.pow((ball.x - br.x - br.width), 2) + Math.pow((ball.y - br.y), 2) <= Math.pow(ball.height, 2)) {
           ball.yDelta *= -1;
@@ -451,9 +454,9 @@
           ball.height = 10;
           ball.width = 0;
           ball.type = 'ball';
-          ball.xDelta = 1; //1
+          ball.xDelta = 2; //1
           ball.color = '#e6ac00';
-          ball.yDelta = -1;
+          ball.yDelta = -2;
 
           $('#livecount').html(livecount);
           $('#levelcount').html(currentlevel);
